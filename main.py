@@ -8,12 +8,47 @@ from discord.ext import commands
 from discord.ui import Button, View
 import asyncio
 import random
+import os
+from dotenv import load_dotenv
+import youtube_dl
 
 # Erstelle eine Instanz des Bots
 client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 # Liste der Schimpfwörter
 bad_words = ["scheiße", "shit", "fuck"]  # Swear
+
+load_dotenv()
+DISCORD_TOKEN = os.getenv("discord_token")
+intents = discord.Intents().all()
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+ydl_opts = {
+    'format': 'bestaudio/best',
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '192',
+    }],
+}
+
+@bot.command()
+async def play(ctx, url):
+    voice_channel = ctx.author.voice.channel
+    voice_client = await voice_channel.connect()
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        url2 = info['formats'][0]['url']
+        voice_client.play(discord.FFmpegPCMAudio(url2))
+
+@bot.command()
+async def stop(ctx):
+    voice_client = ctx.voice_client
+    await voice_client.disconnect()
+
+
+
 
 @client.event
 async def on_ready():
