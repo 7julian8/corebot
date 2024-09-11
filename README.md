@@ -1,4 +1,4 @@
-# CoreBot
+# CoreBot (discuntinued)
 
 A simple Discord Core Bot
 - [Click here for the public hosted version](https://discord.com/oauth2/authorize?client_id=1275893719727472640&permissions=8&integration_type=0&scope=bot)
